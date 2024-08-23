@@ -1,0 +1,10 @@
+altair
+numpy
+pydeck
+streamlit
+pandas
+nltk
+simhash
+scikit-learn
+matplotlib
+seaborn
