@@ -21,7 +21,7 @@ def run():
     st.image(cover_photo_image, use_column_width=True)
     
     # Display the title
-    st.markdown("<h2 style='text-align: center; margin: 20px;'>Python Code Similarity Detection Tool</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; margin: 20px;'>Python Code Similarity Detection and Clustering Tool</h2>", unsafe_allow_html=True)
     
     st.write("---")
     st.markdown(
