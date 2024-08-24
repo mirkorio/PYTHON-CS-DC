@@ -1,9 +1,8 @@
-# app.py
-
 import streamlit as st
 import pandas as pd
 import altair as alt
-from backend.backend import extract_files, compare_files, CodeClusterer, find_elbow_point, sanitize_title
+from backend.code_similarity_detection import extract_files, compare_files, sanitize_title
+from backend.code_clustering import CodeClusterer, find_elbow_point
 import os
 import multiprocessing
 
