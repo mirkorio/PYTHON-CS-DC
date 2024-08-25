@@ -26,7 +26,7 @@ def run():
     st.write("---")
     st.markdown(
         """<div style='text-align: justify; text-indent: 30px;'>
-        Welcome to Python Code Similarity Detection Tool by ORION. This tool is developed using a hybrid method that combines AST-based and text-based approaches with 
+        Welcome to Python Code Similarity Detection and Clustering Tool by ORION. This tool is developed using a hybrid method that combines AST-based and text-based approaches with 
         the K-Means algorithm to detect code similarity in Python.
         </div><br>""",
         unsafe_allow_html=True
@@ -38,7 +38,7 @@ def run():
         focusing on both the structural representation and code text information of Python code provided by Abstract Syntax Trees (ASTs) and a text-based approach. By leveraging these
         attributes, the method seeks to achieve a comprehensive detection of similarity in Python codes, capturing both structural patterns and textual features. Additionally, the computational
         efficiency of the K-Means algorithm will be utilized in clustering Python codes that exhibit similarity in their code text and structure, streamlining the process of identifying
-        similarities and differences across a set of code submissions.
+        similarities and differences with in a set of code submissions.
         </div>""",
         unsafe_allow_html=True
     )
