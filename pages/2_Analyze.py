@@ -7,7 +7,7 @@ if 'df' not in st.session_state:
     st.session_state.df = None
 
 # Title of the Streamlit app
-st.title('Enhanced Clustered Code Similarity Analysis')
+st.title('Clustered Code Similarity Analysis')
 
 # Adding an introductory section with markdown
 st.markdown("""
