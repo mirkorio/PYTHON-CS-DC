@@ -10,6 +10,12 @@ import multiprocessing
 def main():
     st.title("Code Similarity Detection and Clustering Tool")
 
+    # Adding an introductory section with markdown
+    st.markdown("""
+    This application allows you to analyze clustered code similarity using a CSV file. 
+    Upload your data to get started and explore various interactive visualizations and filters.
+    """)
+
     # Text input for activity title
     activity_title = st.text_input("Enter a title for the code activity")
 
@@ -66,11 +72,12 @@ def main():
                     st.success("Processing complete!")
                 except Exception as e:
                     st.error(f"An error occurred: {str(e)}")
+    else:
+        st.info('Please upload a CSV file to analyze.')
 
     # Allow users to tweak parameters
     st.sidebar.header("Clustering Parameters")
     num_clusters = st.sidebar.slider("Number of Clusters", min_value=2, max_value=10, value=st.session_state.best_num_clusters)
-    similarity_threshold = st.sidebar.slider("Similarity Threshold", min_value=0.0, max_value=1.0, value=0.6)
 
     # Show similarity results
     if 'similarity_df' in st.session_state and not st.session_state.similarity_df.empty:
