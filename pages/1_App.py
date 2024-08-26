@@ -146,7 +146,7 @@ def main():
                 st.write(f"Silhouette Score: {st.session_state.silhouette_avg:.4f}")
                 st.write(f"Davies-Bouldin Index: {st.session_state.davies_bouldin:.4f}")
 
-            # Display Clustered Data from highest to lowest weighted similarity
+            # Display Clustered codes from highest to lowest weighted similarity
             st.header("Clustered Codes")
             clustered_data_sorted = st.session_state.clustered_data.sort_values(by='Weighted_Similarity', ascending=False)
             st.dataframe(clustered_data_sorted)
