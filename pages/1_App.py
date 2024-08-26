@@ -12,8 +12,8 @@ def main():
 
     # Adding an introductory section with markdown
     st.markdown("""
-    This application allows you to analyze clustered code similarity using a CSV file. 
-    Upload your data to get started and explore various interactive visualizations and filters.
+    This application enables you to detect and analyze code similarity by uploading Python files. 
+    Get started by uploading your files to explore clustered similarity results, interactive visualizations, and detailed comparisons.
     """)
 
     # Text input for activity title

@@ -14,11 +14,21 @@ def run():
         page_icon="logo/logo.png",  # Set your logo image as the page icon
     )
     
-    # Load the cover photo image
-    cover_photo_image = Image.open("logo/lbg.png")  # Update with the path to your cover photo image
+    # Check if session state for images is initialized
+    if 'cover_photo' not in st.session_state:
+        st.session_state.cover_photo = Image.open("logo/lbg.png")  # Update with the path to your cover photo image
+
+    if 'cspc_logo' not in st.session_state:
+        st.session_state.cspc_logo = Image.open("logo/cspc.png")
+
+    if 'ccs_logo' not in st.session_state:
+        st.session_state.ccs_logo = Image.open("logo/ccs.png")
+
+    if 'l2_logo' not in st.session_state:
+        st.session_state.l2_logo = Image.open("logo/l2.png")
     
     # Display the cover photo image
-    st.image(cover_photo_image, use_column_width=True)
+    st.image(st.session_state.cover_photo, use_column_width=True)
     
     # Display the title
     st.markdown("<h2 style='text-align: center; margin: 20px;'>Python Code Similarity Detection and Clustering Tool</h2>", unsafe_allow_html=True)
@@ -47,11 +57,11 @@ def run():
     # Display the images as a footer
     col1, col2, col3 = st.columns([1, 1, 1])
     with col1:
-        st.image("logo/cspc.png", use_column_width=True)
+        st.image(st.session_state.cspc_logo, use_column_width=True)
     with col2:
-        st.image("logo/ccs.png", use_column_width=True)
+        st.image(st.session_state.ccs_logo, use_column_width=True)
     with col3:
-        st.image("logo/l2.png", use_column_width=True)
+        st.image(st.session_state.l2_logo, use_column_width=True)
     
     # Add some spacing and align images properly using CSS
     st.markdown("""
