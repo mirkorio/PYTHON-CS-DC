@@ -73,7 +73,7 @@ def main():
                 except Exception as e:
                     st.error(f"An error occurred: {str(e)}")
     else:
-        st.info('Please upload a CSV file to analyze.')
+        st.info('Please upload Python files.')
 
     # Allow users to tweak parameters
     st.sidebar.header("Clustering Parameters")
