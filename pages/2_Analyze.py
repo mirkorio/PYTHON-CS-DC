@@ -6,6 +6,11 @@ import altair as alt
 if 'df' not in st.session_state:
     st.session_state.df = None
 
+st.set_page_config(
+        page_title="Python Code Similarity Detection and Clustering Tool",
+        page_icon="logo/logo.png",  # Set your logo image as the page icon
+    )
+
 # Title of the Streamlit app
 st.title('Clustered Code Similarity Analysis')
 

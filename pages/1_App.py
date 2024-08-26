@@ -8,6 +8,10 @@ import multiprocessing
 
 
 def main():
+    st.set_page_config(
+        page_title="Python Code Similarity Detection and Clustering Tool",
+        page_icon="logo/logo.png",  # Set your logo image as the page icon
+    )
     st.title("Code Similarity Detection and Clustering Tool")
 
     # Adding an introductory section with markdown
