@@ -12,7 +12,7 @@ st.set_page_config(
     )
 
 # Title of the Streamlit app
-st.title('Clustered Code Similarity Analysis')
+st.subheader('Clustered Code Similarity Analysis')
 
 # Adding an introductory section with markdown
 st.markdown("""
