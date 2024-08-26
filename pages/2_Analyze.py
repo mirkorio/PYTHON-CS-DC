@@ -12,7 +12,7 @@ st.set_page_config(
     )
 
 # Title of the Streamlit app
-st.subheader('Clustered Code Similarity Analysis')
+st.markdown("<h3 style='text-align: center; margin: 20px;'>Clustered Code Similarity Analysis</h2>", unsafe_allow_html=True)
 
 # Adding an introductory section with markdown
 st.markdown("""
