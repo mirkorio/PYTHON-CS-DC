@@ -9,10 +9,10 @@ import multiprocessing
 
 def main():
     st.set_page_config(
-        page_title="Python Code Similarity Detection and Clustering",
+        page_title="Python Code Similarity Detection and Clustering Tool",
         page_icon="logo/logo.png",  # Set your logo image as the page icon
     )
-    st.markdown("<h3 style='text-align: center; margin: 20px;'>Code Similarity Detection and Clustering Tool</h2>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; margin: 20px;'>Code Similarity Detection and Clustering</h2>", unsafe_allow_html=True)
 
     # Adding an introductory section with markdown
     st.markdown("""
