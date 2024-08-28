@@ -182,20 +182,36 @@ def main():
                     code1_content = st.session_state.extracted_files_content.get(code1_path[0], "Content not found.")
                     code2_content = st.session_state.extracted_files_content.get(code2_path[0], "Content not found.")
 
+                    # Retrieve similarity metrics
+                    similarity_data = st.session_state.similarity_df[
+                        (st.session_state.similarity_df['Code1'] == code1) & 
+                        (st.session_state.similarity_df['Code2'] == code2)
+                    ]
+                    text_similarity = similarity_data['Text_Similarity'].values[0]
+                    structural_similarity = similarity_data['Structural_Similarity'].values[0]
+                    weighted_similarity = similarity_data['Weighted_Similarity'].values[0]
+
+                    # Create columns for side-by-side display
                     col1, col2 = st.columns(2)
 
                     with col1:
-                        st.code(code1_content, language='python')
-                        st.write(f"Text Similarity: {st.session_state.similarity_df[(st.session_state.similarity_df['Code1'] == code1) & (st.session_state.similarity_df['Code2'] == code2)]['Text_Similarity'].values[0]:.4f}")
-                        st.write(f"Structural Similarity: {st.session_state.similarity_df[(st.session_state.similarity_df['Code1'] == code1) & (st.session_state.similarity_df['Code2'] == code2)]['Structural_Similarity'].values[0]:.4f}")
-                        st.write(f"Weighted Similarity: {st.session_state.similarity_df[(st.session_state.similarity_df['Code1'] == code1) & (st.session_state.similarity_df['Code2'] == code2)]['Weighted_Similarity'].values[0]:.4f}")
+                        with st.container():
+                            st.markdown("### Code 1 Details")
+                            st.write(f"**File Name:** {code1}")
+                            st.write(f"**Text Similarity:** {text_similarity:.4f}")
+                            st.write(f"**Structural Similarity:** {structural_similarity:.4f}")
+                            st.write(f"**Weighted Similarity:** {weighted_similarity:.4f}")
+                            st.code(code1_content, language='python')
 
                     with col2:
-                        st.code(code2_content, language='python')
-                        st.write(f"Text Similarity: {st.session_state.similarity_df[(st.session_state.similarity_df['Code1'] == code1) & (st.session_state.similarity_df['Code2'] == code2)]['Text_Similarity'].values[0]:.4f}")
-                        st.write(f"Structural Similarity: {st.session_state.similarity_df[(st.session_state.similarity_df['Code1'] == code1) & (st.session_state.similarity_df['Code2'] == code2)]['Structural_Similarity'].values[0]:.4f}")
-                        st.write(f"Weighted Similarity: {st.session_state.similarity_df[(st.session_state.similarity_df['Code1'] == code1) & (st.session_state.similarity_df['Code2'] == code2)]['Weighted_Similarity'].values[0]:.4f}")
-           
+                        with st.container():
+                            st.markdown("### Code 2 Details")
+                            st.write(f"**File Name:** {code2}")
+                            st.write(f"**Text Similarity:** {text_similarity:.4f}")
+                            st.write(f"**Structural Similarity:** {structural_similarity:.4f}")
+                            st.write(f"**Weighted Similarity:** {weighted_similarity:.4f}")
+                            st.code(code2_content, language='python')
+                            
             # Download buttons
             if st.session_state.similarity_df is not None and not st.session_state.similarity_df.empty:
                 st.header("Download Results")
