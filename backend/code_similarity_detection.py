@@ -7,6 +7,7 @@ import tempfile
 import tokenize
 from difflib import SequenceMatcher
 from simhash import Simhash
+from normalizedAST import ASTNormalizer
 
 # Function to tokenize code
 def tokenize_code(code):
@@ -31,12 +32,14 @@ def calculate_text_similarity(code1, code2):
     similarity = 1 - (distance / 64)  # Simhash uses 64-bit hash by default
     return similarity  # Return the calculated similarity
 
-# Function to parse code to AST
-def parse_code_to_ast(code):
+# Function to parse code to AST and normalize it
+def parse_and_normalize_code(code):
     try:
-        return ast.parse(code)  # Parse the code into an AST
+        tree = ast.parse(code)
+        normalizer = ASTNormalizer()
+        return normalizer.visit(tree)
     except SyntaxError:
-        return None  # Return None if there is a syntax error
+        return None
 
 # Function to compare ASTs
 def compare_asts(ast1, ast2):
@@ -49,10 +52,10 @@ def compare_asts(ast1, ast2):
 
 # Function to calculate structural similarity using AST comparison
 def calculate_structural_similarity(code1, code2):
-    ast1 = parse_code_to_ast(code1)  # Parse the first code snippet into an AST
-    ast2 = parse_code_to_ast(code2)  # Parse the second code snippet into an AST
-    similarity = compare_asts(ast1, ast2)  # Compare the two ASTs for structural similarity
-    return similarity  # Return the calculated similarity
+    ast1 = parse_and_normalize_code(code1)
+    ast2 = parse_and_normalize_code(code2)
+    similarity = compare_asts(ast1, ast2)
+    return similarity
 
 # Function to calculate weighted average of text and structural similarity
 def calculate_weighted_similarity(text_similarity, structural_similarity):
