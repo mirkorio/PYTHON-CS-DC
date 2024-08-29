@@ -7,7 +7,7 @@ import tempfile
 import tokenize
 from difflib import SequenceMatcher
 from simhash import Simhash
-from normalizedAST import ASTNormalizer
+from backend.normalizedAST import ASTNormalizer
 
 # Function to tokenize code
 def tokenize_code(code):
