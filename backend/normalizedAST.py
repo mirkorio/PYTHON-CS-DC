@@ -1,27 +1,44 @@
 import ast
 
-# Normalize AST by extracting only the structure and node types
-class ASTNormalizer:
-    def normalize(self, node, level=0):
-        normalized = []
+# Normalize AST: Replace constants, identifiers, and remove unnecessary nodes
+class ASTNormalizer(ast.NodeTransformer):
+    def visit_Name(self, node):
+        # Normalize all variable names to a generic "VAR"
+        return ast.copy_location(ast.Name(id="VAR", ctx=node.ctx), node)
+    
+    def visit_Constant(self, node):
+        # Normalize constants (int, float, str) to a generic "CONST"
+        if isinstance(node.value, (int, float, str)):
+            return ast.copy_location(ast.Constant(value="CONST"), node)
+        return node
 
-        def visit(node, level):
-            # Append the type of the current AST node with indentation based on its level in the tree
-            normalized.append("    " * level + f"<'{type(node).__name__}'>")
+    def visit_Expr(self, node):
+        # Visit the expression value to continue normalization
+        node.value = self.visit(node.value)
+        return node
+    
+    def visit_Assign(self, node):
+        # Normalize all assignment targets and values
+        node.targets = [self.visit(t) for t in node.targets]
+        node.value = self.visit(node.value)
+        return node
+    
+    def visit_Call(self, node):
+        # Normalize function calls (remove arguments)
+        node.func = self.visit(node.func)
+        node.args = [self.visit(arg) for arg in node.args]
+        node.keywords = [self.visit(kw) for kw in node.keywords]
+        return node
+    
+    def generic_visit(self, node):
+        # Ensure all other nodes are visited
+        return super().generic_visit(node)
 
-            # Recursively visit the child nodes with an increased level (indentation)
-            for child in ast.iter_child_nodes(node):
-                visit(child, level + 1)
-
-        visit(node, level)
-        return normalized
-
-# Function to parse and normalize code to AST structure
-def parse_code_to_normalized_ast(code):
+# Function to parse and normalize code to AST
+def parse_code_to_ast(code):
     try:
-        # Parse the code into an AST
         tree = ast.parse(code)
         normalizer = ASTNormalizer()
-        return normalizer.normalize(tree)  # Normalize the parsed AST
+        return normalizer.visit(tree)
     except SyntaxError:
         return None

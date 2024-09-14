@@ -32,14 +32,14 @@ def calculate_text_similarity(code1, code2):
     similarity = 1 - (distance / 64)  # Simhash uses 64-bit hash by default
     return similarity  # Return the calculated similarity
 
-# Function to parse and normalize code to AST structure
+# Function to parse code to AST and normalize it
 def parse_and_normalize_code(code):
     try:
-        tree = ast.parse(code)  # Parse the code into an AST
-        normalizer = ASTNormalizer()  # Initialize the AST normalizer
-        return normalizer.normalize(tree)  # Normalize the parsed AST structure
+        tree = ast.parse(code)
+        normalizer = ASTNormalizer()
+        return normalizer.visit(tree)
     except SyntaxError:
-        return None  # Return None if there's a syntax error in the code
+        return None
 
 # Function to compare ASTs
 def compare_asts(ast1, ast2):
