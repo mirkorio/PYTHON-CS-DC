@@ -7,7 +7,7 @@ import tempfile
 import tokenize
 from difflib import SequenceMatcher
 from simhash import Simhash
-from backend.normalizedAST import ASTNormalizer
+from backend.normalizedAST import normalize_ast
 
 # Function to tokenize code
 def tokenize_code(code):
@@ -36,19 +36,20 @@ def calculate_text_similarity(code1, code2):
 def parse_and_normalize_code(code):
     try:
         tree = ast.parse(code)
-        normalizer = ASTNormalizer()
-        return normalizer.visit(tree)
+        return normalize_ast(tree)
     except SyntaxError:
         return None
 
-# Function to compare ASTs
 def compare_asts(ast1, ast2):
     if ast1 is None or ast2 is None:  # Check if either AST is None
         return 0  # Return 0 if either AST is None
-    ast_str1 = ast.dump(ast1)  # Convert the first AST to a string representation
-    ast_str2 = ast.dump(ast2)  # Convert the second AST to a string representation
+
+    ast_str1 = "\n".join(ast1)  # Convert the first AST to a string representation
+    ast_str2 = "\n".join(ast2)  # Convert the second AST to a string representation
+
     similarity_ratio = SequenceMatcher(None, ast_str1, ast_str2).ratio()  # Calculate similarity using SequenceMatcher
     return similarity_ratio  # Return the similarity ratio
+
 
 # Function to calculate structural similarity using AST comparison
 def calculate_structural_similarity(code1, code2):
