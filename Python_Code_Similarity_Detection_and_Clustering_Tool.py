@@ -15,7 +15,7 @@ def run():
     )
     
     # Load the cover photo image
-    cover_photo_image = Image.open("logo/latest_bg.png.png")  # Update with the path to your cover photo image
+    cover_photo_image = Image.open("logo/latest_bg.png")  # Update with the path to your cover photo image
    
     
     # Display the cover photo image
