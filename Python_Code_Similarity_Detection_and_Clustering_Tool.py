@@ -16,6 +16,7 @@ def run():
     
     # Load the cover photo image
     cover_photo_image = Image.open("logo/lbg.png")  # Update with the path to your cover photo image
+    cover_photo_image = cover_photo_image.resize((200, 200))
     
     # Display the cover photo image
     st.image(cover_photo_image, use_column_width=True)
