@@ -7,12 +7,12 @@ if 'df' not in st.session_state:
     st.session_state.df = None
 
 st.set_page_config(
-        page_title="Python Code Similarity Detection and Clustering Tool",
-        page_icon="logo/logo.png",  # Set your logo image as the page icon
-    )
+    page_title="Python Code Similarity Detection and Clustering Tool",
+    page_icon="logo/logo.png",  # Set your logo image as the page icon
+)
 
 # Title of the Streamlit app
-st.markdown("<h3 style='text-align: center; margin: 20px;'>Clustered Code Similarity Analysis</h2>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center; margin: 20px;'>Clustered Code Similarity Analysis</h3>", unsafe_allow_html=True)
 
 # Adding an introductory section with markdown
 st.markdown("""
@@ -44,12 +44,12 @@ if st.session_state.df is not None:
     df.columns = df.columns.str.strip().str.lower()
 
     # Define required columns in lowercase
-    required_columns = ['code1', 'code2', 'text_similarity', 'structural_similarity', 'weighted_similarity', 'cluster']
+    required_columns = ['code1', 'code2', 'text_similarity_%', 'structural_similarity_%', 'weighted_similarity_%', 'cluster']
 
     # Check if all required columns are present in the dataframe
     if all(column in df.columns for column in required_columns):
         # Rename columns back to original names for consistency in visualizations
-        df.columns = ['Code1', 'Code2', 'Text_Similarity', 'Structural_Similarity', 'Weighted_Similarity', 'Cluster']
+        df.columns = ['Code1', 'Code2', 'Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%', 'Cluster']
         
         # Summary statistics with an expander
         with st.expander("Summary Statistics"):
@@ -58,16 +58,16 @@ if st.session_state.df is not None:
         # Filter options in the sidebar
         st.sidebar.header('Filter Options')
         selected_cluster = st.sidebar.multiselect('Select cluster(s) to visualize', options=df['Cluster'].unique(), default=df['Cluster'].unique())
-        text_similarity_range = st.sidebar.slider('Text Similarity Range', 0.0, 1.0, (0.0, 1.0))
-        structural_similarity_range = st.sidebar.slider('Structural Similarity Range', 0.0, 1.0, (0.0, 1.0))
-        weighted_similarity_range = st.sidebar.slider('Weighted Similarity Range', 0.0, 1.0, (0.0, 1.0))
+        text_similarity_range = st.sidebar.slider('Text Similarity Range (%)', 0.0, 100.0, (0.0, 100.0))
+        structural_similarity_range = st.sidebar.slider('Structural Similarity Range (%)', 0.0, 100.0, (0.0, 100.0))
+        weighted_similarity_range = st.sidebar.slider('Weighted Similarity Range (%)', 0.0, 100.0, (0.0, 100.0))
 
         # Filter the dataframe based on user selection
         filtered_df = df[
             (df['Cluster'].isin(selected_cluster)) &
-            (df['Text_Similarity'].between(*text_similarity_range)) &
-            (df['Structural_Similarity'].between(*structural_similarity_range)) &
-            (df['Weighted_Similarity'].between(*weighted_similarity_range))
+            (df['Text_Similarity_%'].between(*text_similarity_range)) &
+            (df['Structural_Similarity_%'].between(*structural_similarity_range)) &
+            (df['Weighted_Similarity_%'].between(*weighted_similarity_range))
         ]
 
         # Display filtered dataframe
@@ -76,10 +76,10 @@ if st.session_state.df is not None:
         # Enhanced visualizations with custom themes and layering
         st.subheader('Text Similarity vs Structural Similarity')
         scatter_plot = alt.Chart(filtered_df).mark_circle(size=60).encode(
-            x=alt.X('Text_Similarity', title='Text Similarity'),
-            y=alt.Y('Structural_Similarity', title='Structural Similarity'),
-            color=alt.Color('Weighted_Similarity', scale=alt.Scale(scheme='viridis')),
-            tooltip=['Code1', 'Code2', 'Text_Similarity', 'Structural_Similarity', 'Weighted_Similarity']
+            x=alt.X('Text_Similarity_%', title='Text Similarity (%)'),
+            y=alt.Y('Structural_Similarity_%', title='Structural Similarity (%)'),
+            color=alt.Color('Weighted_Similarity_%', scale=alt.Scale(scheme='viridis')),
+            tooltip=['Code1', 'Code2', 'Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']
         ).interactive().properties(
             width=800,
             height=400
@@ -103,7 +103,7 @@ if st.session_state.df is not None:
         st.altair_chart(bar_chart, use_container_width=True)
 
         st.subheader('Histograms of Similarity Metrics')
-        for column in ['Text_Similarity', 'Structural_Similarity', 'Weighted_Similarity']:
+        for column in ['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']:
             hist_chart = alt.Chart(filtered_df).mark_bar().encode(
                 alt.X(column, bin=alt.Bin(maxbins=30), title=column.replace('_', ' ').title()),
                 y=alt.Y('count()', title='Frequency'),
@@ -120,13 +120,13 @@ if st.session_state.df is not None:
             x=alt.X(alt.repeat("column"), type='quantitative', title=None),
             y=alt.Y(alt.repeat("row"), type='quantitative', title=None),
             color=alt.Color('Cluster:N', legend=alt.Legend(title="Cluster")),
-            tooltip=['Code1', 'Code2', 'Text_Similarity', 'Structural_Similarity', 'Weighted_Similarity']
+            tooltip=['Code1', 'Code2', 'Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']
         ).properties(
             width=250,
             height=250
         ).repeat(
-            row=['Text_Similarity', 'Structural_Similarity', 'Weighted_Similarity'],
-            column=['Text_Similarity', 'Structural_Similarity', 'Weighted_Similarity']
+            row=['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%'],
+            column=['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']
         ).interactive()
 
         st.altair_chart(pair_plot, use_container_width=True)

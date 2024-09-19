@@ -6,7 +6,6 @@ from backend.code_clustering import CodeClusterer, find_elbow_point
 import os
 import multiprocessing
 
-
 def main():
     st.set_page_config(
         page_title="Python Code Similarity Detection and Clustering Tool",
@@ -70,7 +69,9 @@ def main():
                 pool.join()
 
                 try:
-                    similarity_df = pd.DataFrame(results, columns=['Code1', 'Code2', 'Text_Similarity', 'Structural_Similarity', 'Weighted_Similarity'])
+                    # Adjust the similarity values to be percentages and rename columns
+                    similarity_df = pd.DataFrame(results, columns=['Code1', 'Code2', 'Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%'])
+                    similarity_df[['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']] = similarity_df[['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']].apply(lambda x: round(x * 100, 2))
                     st.session_state.similarity_df = similarity_df
 
                     st.success("Processing complete!")
@@ -129,10 +130,10 @@ def main():
         if st.session_state.clustering_performed and 'clustered_data' in st.session_state and not st.session_state.clustered_data.empty:
             st.header("Scatter Plot")
             cluster_chart = alt.Chart(st.session_state.clustered_data).mark_circle(size=60).encode(
-                x='Text_Similarity',
-                y='Structural_Similarity',
+                x='Text_Similarity_%',
+                y='Structural_Similarity_%',
                 color='Cluster:N',
-                tooltip=['Code1', 'Code2', 'Text_Similarity', 'Structural_Similarity', 'Weighted_Similarity']
+                tooltip=['Code1', 'Code2', 'Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']
             ).interactive()
             st.altair_chart(cluster_chart, use_container_width=True)
 
@@ -152,23 +153,11 @@ def main():
 
             # Display Clustered codes from highest to lowest weighted similarity
             st.header("Clustered Codes")
-            clustered_data_sorted = st.session_state.clustered_data.sort_values(by='Weighted_Similarity', ascending=False)
+            clustered_data_sorted = st.session_state.clustered_data.sort_values(by='Weighted_Similarity_%', ascending=False)
             st.dataframe(clustered_data_sorted)
 
             # Side-by-Side Code Comparison
             st.header("Side-by-Side Code Comparison")
-            # Expander for plagiarism forms and detection guidelines
-            with st.expander("Plagiarism Forms and Detection Guidelines"):
-                st.write("""
-                In the context of computer programming, common forms of code plagiarism include:
-
-                1. **Complete copy-pasting** of code.
-                2. **Altering comments** within the code.
-                3. **Changing identifiers** like variable names.
-                4. **Rearranging the code sequence** without changing functionality.
-                
-                However, if an individual replicates another’s code but performs extensive modifications and restructuring while maintaining the function’s integrity, this action should not be classified as plagiarism.
-                """)
             code_pairs = st.session_state.similarity_df[['Code1', 'Code2']].apply(tuple, axis=1).tolist()
             selected_pair = st.selectbox("Select a pair of files to compare", options=code_pairs)
             st.session_state.selected_pair = selected_pair
@@ -187,44 +176,43 @@ def main():
                         (st.session_state.similarity_df['Code1'] == code1) & 
                         (st.session_state.similarity_df['Code2'] == code2)
                     ]
-                    text_similarity = similarity_data['Text_Similarity'].values[0]
-                    structural_similarity = similarity_data['Structural_Similarity'].values[0]
-                    weighted_similarity = similarity_data['Weighted_Similarity'].values[0]
+                    text_similarity = similarity_data['Text_Similarity_%'].values[0]
+                    structural_similarity = similarity_data['Structural_Similarity_%'].values[0]
+                    weighted_similarity = similarity_data['Weighted_Similarity_%'].values[0]
 
                     # Create columns for side-by-side display
                     col1, col2 = st.columns(2)
 
                     with col1:
-                        with st.container():
-                            st.markdown("### Code 1 Details")
-                            st.write(f"**File Name:** {code1}")
-                            st.write(f"**Text Similarity:** {text_similarity:.4f}")
-                            st.write(f"**Structural Similarity:** {structural_similarity:.4f}")
-                            st.write(f"**Weighted Similarity:** {weighted_similarity:.4f}")
-                            st.code(code1_content, language='python')
+                        st.markdown("### Code 1 Details")
+                        st.write(f"**File Name:** {code1}")
+                        st.write(f"**Text Similarity:** {text_similarity:.2f}%")
+                        st.write(f"**Structural Similarity:** {structural_similarity:.2f}%")
+                        st.write(f"**Weighted Similarity:** {weighted_similarity:.2f}%")
+                        st.code(code1_content, language='python')
 
                     with col2:
-                        with st.container():
-                            st.markdown("### Code 2 Details")
-                            st.write(f"**File Name:** {code2}")
-                            st.write(f"**Text Similarity:** {text_similarity:.4f}")
-                            st.write(f"**Structural Similarity:** {structural_similarity:.4f}")
-                            st.write(f"**Weighted Similarity:** {weighted_similarity:.4f}")
-                            st.code(code2_content, language='python')
-                            
+                        st.markdown("### Code 2 Details")
+                        st.write(f"**File Name:** {code2}")
+                        st.write(f"**Text Similarity:** {text_similarity:.2f}%")
+                        st.write(f"**Structural Similarity:** {structural_similarity:.2f}%")
+                        st.write(f"**Weighted Similarity:** {weighted_similarity:.2f}%")
+                        st.code(code2_content, language='python')
+
             # Download buttons
             if st.session_state.similarity_df is not None and not st.session_state.similarity_df.empty:
                 st.header("Download Results")
                 # Download button for clustered codes
                 if not st.session_state.clustered_data.empty:
-                    df = st.session_state.clustered_data[['Code1', 'Code2', 'Text_Similarity', 'Structural_Similarity', 'Weighted_Similarity', 'Cluster']]
+                    df = st.session_state.clustered_data[['Code1', 'Code2', 'Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%', 'Cluster']]
                     csv = df.to_csv(index=False)
                     st.download_button(
                         label="Download Clustered Codes",
                         data=csv,
-                        file_name=f"{activity_title}_clustered_codes.csv",
+                        file_name=f"{sanitize_title(activity_title)}_clustered_codes.csv",
                         mime="text/csv"
                     )
-                    
+
 if __name__ == "__main__":
     main()
+

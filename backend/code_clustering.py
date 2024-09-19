@@ -22,8 +22,7 @@ class CodeClusterer:
             raise ValueError("DataFrame is empty or not loaded.")  # Raise an error if data is not loaded or is empty
 
         # Select features for clustering (only the similarity columns are used)
-        features = self.data[['Text_Similarity', 'Structural_Similarity', 'Weighted_Similarity']]
-
+        features = self.data[['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']]
         # Fit the KMeans model to the selected features
         self.model.fit(features)
 
@@ -47,7 +46,7 @@ class CodeClusterer:
             raise ValueError("DataFrame is empty or not loaded.")  # Raise an error if data is not loaded or is empty
 
         # Select features for calculating elbow scores
-        features = self.data[['Text_Similarity', 'Structural_Similarity', 'Weighted_Similarity']]
+        features = self.data[['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']]
 
         # Iterate through a range of cluster numbers from 2 to max_clusters
         for i in range(2, max_clusters + 1):
