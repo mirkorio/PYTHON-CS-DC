@@ -20,6 +20,23 @@ This application allows you to analyze clustered code similarity using a CSV fil
 Upload your data to get started and explore various interactive visualizations and filters.
 """)
 
+# Function to apply color based on similarity score
+def apply_color(val):
+    """
+    Color code cells based on the Weighted Similarity percentage.
+    """
+    if val >= 75:
+        color = 'background-color: red'
+    elif 50 <= val < 75:
+        color = 'background-color: orange'
+    elif 25 <= val < 50:
+        color = 'background-color: yellow'
+    elif 1 <= val < 25:
+        color = 'background-color: green'
+    else:
+        color = 'background-color: blue'
+    return color
+
 # Uploading the CSV file
 uploaded_file = st.file_uploader("Upload a CSV file", type="csv")
 
@@ -35,13 +52,23 @@ if st.session_state.df is not None:
 
     # Display the dataframe with an expander to save space
     with st.expander("View Uploaded Data"):
-        st.write(df)
+        st.write("Full DataFrame")
+        # Normalize column names for consistency
+        df.columns = df.columns.str.strip().str.lower()
+
+        # Format columns to two decimal places and apply color formatting to Weighted_Similarity_%
+        df[['text_similarity_%', 'structural_similarity_%', 'weighted_similarity_%']] = df[['text_similarity_%', 'structural_similarity_%', 'weighted_similarity_%']].round(2)
+
+        styled_df = df.style.format({
+            'text_similarity_%': '{:.2f}%',
+            'structural_similarity_%': '{:.2f}%',
+            'weighted_similarity_%': '{:.2f}%'
+        }).applymap(apply_color, subset=['weighted_similarity_%'])
+        
+        st.dataframe(styled_df)
 
     # Display the detected columns
     st.write("Detected Columns:", df.columns.tolist())
-
-    # Normalize column names for consistency
-    df.columns = df.columns.str.strip().str.lower()
 
     # Define required columns in lowercase
     required_columns = ['code1', 'code2', 'text_similarity_%', 'structural_similarity_%', 'weighted_similarity_%', 'cluster']
@@ -70,8 +97,17 @@ if st.session_state.df is not None:
             (df['Weighted_Similarity_%'].between(*weighted_similarity_range))
         ]
 
-        # Display filtered dataframe
-        st.write("Filtered Data", filtered_df)
+        # Display filtered dataframe with formatted similarity columns
+        st.write("Filtered Data")
+        filtered_df[['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']] = filtered_df[['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']].round(2)
+
+        styled_filtered_df = filtered_df.style.format({
+            'Text_Similarity_%': '{:.2f}%',
+            'Structural_Similarity_%': '{:.2f}%',
+            'Weighted_Similarity_%': '{:.2f}%'
+        }).applymap(apply_color, subset=['Weighted_Similarity_%'])
+
+        st.dataframe(styled_filtered_df)
 
         # Enhanced visualizations with custom themes and layering
         st.subheader('Text Similarity vs Structural Similarity')

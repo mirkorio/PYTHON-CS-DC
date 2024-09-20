@@ -11,7 +11,7 @@ def main():
         page_title="Python Code Similarity Detection and Clustering Tool",
         page_icon="logo/logo.png",  # Set your logo image as the page icon
     )
-    st.markdown("<h3 style='text-align: center; margin: 20px;'>Code Similarity Detection and Clustering</h2>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; margin: 20px;'>Code Similarity Detection and Clustering</h3>", unsafe_allow_html=True)
 
     # Adding an introductory section with markdown
     st.markdown("""
@@ -80,26 +80,26 @@ def main():
     else:
         st.info('Please upload Python files.')
 
-    # Allow users to tweak parameters
-    st.sidebar.header("Clustering Parameters")
-    num_clusters = st.sidebar.slider("Number of Clusters", min_value=2, max_value=10, value=st.session_state.best_num_clusters)
-
     # Show similarity results
     if 'similarity_df' in st.session_state and not st.session_state.similarity_df.empty:
         st.header("Similarity Results")
-        st.dataframe(st.session_state.similarity_df)
+        
+        # **Display dataframe with two decimal places and % sign**
+        df_display = st.session_state.similarity_df.copy()
+        df_display[['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']] = df_display[['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']].applymap(lambda x: f"{x:.2f}%")
+        st.dataframe(df_display)
 
         # Clustering
         if st.button("Perform Clustering"):
             with st.spinner("Performing clustering..."):
                 # Calculate the elbow method automatically
-                clusterer = CodeClusterer(num_clusters=num_clusters)
+                clusterer = CodeClusterer(num_clusters=st.session_state.best_num_clusters)
                 clusterer.load_data(st.session_state.similarity_df)
                 clusterer.calculate_elbow(max_clusters=10)
                 st.session_state.elbow_scores = clusterer.elbow_scores
                 st.session_state.best_num_clusters = find_elbow_point(clusterer.elbow_scores)
 
-                clusterer = CodeClusterer(num_clusters=num_clusters)
+                clusterer = CodeClusterer(num_clusters=st.session_state.best_num_clusters)
                 clusterer.load_data(st.session_state.similarity_df)
 
                 try:
@@ -154,6 +154,7 @@ def main():
             # Display Clustered codes from highest to lowest weighted similarity
             st.header("Clustered Codes")
             clustered_data_sorted = st.session_state.clustered_data.sort_values(by='Weighted_Similarity_%', ascending=False)
+            clustered_data_sorted[['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']] = clustered_data_sorted[['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']].applymap(lambda x: f"{x:.2f}%")
             st.dataframe(clustered_data_sorted)
 
             # Side-by-Side Code Comparison
@@ -198,7 +199,7 @@ def main():
                         st.write(f"**Structural Similarity:** {structural_similarity:.2f}%")
                         st.write(f"**Weighted Similarity:** {weighted_similarity:.2f}%")
                         st.code(code2_content, language='python')
-
+                        
             # Download buttons
             if st.session_state.similarity_df is not None and not st.session_state.similarity_df.empty:
                 st.header("Download Results")
