@@ -26,15 +26,15 @@ def apply_color(val):
     Color code cells based on the Weighted Similarity percentage.
     """
     if val >= 75:
-        color = 'background-color: red'
+        color = 'background-color: #A04747'#red
     elif 50 <= val < 75:
-        color = 'background-color: orange'
+        color = 'background-color: #D8A25E'#orange
     elif 25 <= val < 50:
-        color = 'background-color: yellow'
+        color = 'background-color: #EEDF7A'#yellow
     elif 1 <= val < 25:
-        color = 'background-color: green'
+        color = 'background-color: #557C56'#green
     else:
-        color = 'background-color: blue'
+        color = 'background-color: #6A9AB0'#blue
     return color
 
 # Uploading the CSV file
