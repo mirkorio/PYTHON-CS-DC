@@ -131,10 +131,17 @@ if st.session_state.df is not None:
 
         # Enhanced visualizations with custom themes and layering
         st.subheader('Text Similarity vs Structural Similarity')
+
+        # Define the custom color scale based on Weighted_Similarity_% thresholds
+        color_scale = alt.Scale(
+            domain=[0, 1, 25, 50, 75, 100],
+            range=['#6A9AB0', '#557C56', '#EEDF7A', '#D8A25E', '#A04747']
+        )
+
         scatter_plot = alt.Chart(filtered_df).mark_circle(size=60).encode(
             x=alt.X('Text_Similarity_%', title='Text Similarity (%)'),
             y=alt.Y('Structural_Similarity_%', title='Structural Similarity (%)'),
-            color=alt.Color('Weighted_Similarity_%', scale=alt.Scale(scheme='viridis')),
+            color=alt.Color('Weighted_Similarity_%', scale=color_scale, legend=alt.Legend(title="Weighted Similarity (%)")),
             tooltip=['Code1', 'Code2', 'Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']
         ).interactive().properties(
             width=800,
@@ -142,6 +149,7 @@ if st.session_state.df is not None:
         )
 
         st.altair_chart(scatter_plot, use_container_width=True)
+
 
         st.subheader('Number of Code Pairs in Each Cluster')
         cluster_count = filtered_df['Cluster'].value_counts().reset_index()
