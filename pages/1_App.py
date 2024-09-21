@@ -159,6 +159,20 @@ def main():
 
             # Side-by-Side Code Comparison
             st.header("Side-by-Side Code Comparison")
+
+            # Expander for plagiarism forms and detection guidelines
+            with st.expander("Plagiarism Forms and Detection Guidelines"):
+                st.write("""
+                In the context of computer programming, common forms of code plagiarism include:
+
+                1. **Complete copy-pasting** of code.
+                2. **Altering comments** within the code.
+                3. **Changing identifiers** like variable names.
+                4. **Rearranging the code sequence** without changing functionality.
+                
+                However, if an individual replicates another’s code but performs extensive modifications and restructuring while maintaining the function’s integrity, this action should not be classified as plagiarism.
+                """)
+
             code_pairs = st.session_state.similarity_df[['Code1', 'Code2']].apply(tuple, axis=1).tolist()
             selected_pair = st.selectbox("Select a pair of files to compare", options=code_pairs)
             st.session_state.selected_pair = selected_pair

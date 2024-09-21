@@ -99,6 +99,16 @@ if st.session_state.df is not None:
 
         # Display filtered dataframe with formatted similarity columns
         st.write("Filtered Data")
+        # Expander for Color Labels Explanation
+        with st.expander("Color Labels Explanation"):
+            st.markdown("""
+            - **Blue**: 0% similarity score or not similar.
+            - **Green**: 1% - 24% very low similarity score.
+            - **Yellow**: 25% - 49% low similarity score.
+            - **Orange**: 50% - 74% mid similarity score.
+            - **Red**: 75% - 100% high similarity score.
+            """)
+
         filtered_df[['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']] = filtered_df[['Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%']].round(2)
 
         styled_filtered_df = filtered_df.style.format({
