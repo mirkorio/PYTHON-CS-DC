@@ -159,31 +159,31 @@ if st.session_state.df is not None:
         overall_similarity = df.groupby('Code1').agg(
             average_text_similarity=('Text_Similarity_%', 'mean'),
             average_structural_similarity=('Structural_Similarity_%', 'mean'),
-            overall_weighted_similarity=('Weighted_Similarity_%', 'mean')
+            average_weighted_similarity=('Weighted_Similarity_%', 'mean')
         ).reset_index()
 
         # Round the results for better display
-        overall_similarity[['overall_weighted_similarity', 'average_text_similarity', 'average_structural_similarity']] = overall_similarity[
-            ['overall_weighted_similarity', 'average_text_similarity', 'average_structural_similarity']].round(2)
+        overall_similarity[['average_weighted_similarity', 'average_text_similarity', 'average_structural_similarity']] = overall_similarity[
+            ['average_weighted_similarity', 'average_text_similarity', 'average_structural_similarity']].round(2)
 
-        # Sort the DataFrame from highest to lowest overall_weighted_similarity
-        overall_similarity = overall_similarity.sort_values(by='overall_weighted_similarity', ascending=False)
+        # Sort the DataFrame from highest to lowest average_weighted_similarity
+        overall_similarity = overall_similarity.sort_values(by='average_weighted_similarity', ascending=False)
 
         # Sidebar filter for overall similarity
-        weighted_similarity_range = st.sidebar.slider('Overall Weighted Similarity Range (%)', 0.0, 100.0, (0.0, 100.0))
+        weighted_similarity_range = st.sidebar.slider('Average Weighted Similarity Range (%)', 0.0, 100.0, (0.0, 100.0))
 
         # Filter the overall similarity DataFrame based on user selection
-        filtered_overall_similarity = overall_similarity[(overall_similarity['overall_weighted_similarity'].between(*weighted_similarity_range)) ]
+        filtered_overall_similarity = overall_similarity[(overall_similarity['average_weighted_similarity'].between(*weighted_similarity_range)) ]
 
         # Apply the existing apply_color function to color-code the similarity scores
         styled_filtered_overall_similarity = filtered_overall_similarity.style.applymap(
             apply_color, 
-            subset=['overall_weighted_similarity']
+            subset=['average_weighted_similarity']
         )
 
         # Add percentage formatting after applying the color
         styled_filtered_overall_similarity = styled_filtered_overall_similarity.format({
-            'overall_weighted_similarity': '{:.2f}%',
+            'average_weighted_similarity': '{:.2f}%',
             'average_text_similarity': '{:.2f}%',
             'average_structural_similarity': '{:.2f}%'
         })
