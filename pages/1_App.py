@@ -214,11 +214,10 @@ def main():
                         st.write(f"**Weighted Similarity:** {weighted_similarity:.2f}%")
                         st.code(code2_content, language='python')
                         
-            # Download buttons
-            if st.session_state.similarity_df is not None and not st.session_state.similarity_df.empty:
-                st.header("Download Results")
-                # Download button for clustered codes
-                if not st.session_state.clustered_data.empty:
+            # Display the download button in the sidebar only if clustering is done
+            with st.sidebar:
+                if st.session_state.clustering_performed and not st.session_state.clustered_data.empty:
+                    #st.write("Download Results")
                     df = st.session_state.clustered_data[['Code1', 'Code2', 'Text_Similarity_%', 'Structural_Similarity_%', 'Weighted_Similarity_%', 'Cluster']]
                     csv = df.to_csv(index=False)
                     st.download_button(
@@ -227,7 +226,6 @@ def main():
                         file_name=f"{sanitize_title(activity_title)}_clustered_codes.csv",
                         mime="text/csv"
                     )
-
 if __name__ == "__main__":
     main()
 
