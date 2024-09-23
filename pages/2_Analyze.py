@@ -7,7 +7,7 @@ if 'df' not in st.session_state:
     st.session_state.df = None
 
 st.set_page_config(
-    page_title="Python Code Similarity Detection and Clustering Tool",
+    page_title="Analyze",
     page_icon="logo/logo.png",  # Set your logo image as the page icon
 )
 
